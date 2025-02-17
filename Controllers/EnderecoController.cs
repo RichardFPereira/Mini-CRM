@@ -34,9 +34,49 @@ namespace MiniCRM.Controllers
             var endereco = _context.Enderecos.Find(id);
             
             if (endereco == null)
-                return NotFound();
+                return NotFound("ID de endereço inválido!");
 
             return Ok(endereco);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult AtualizaEndereco (int id, Endereco endereco)
+        {
+            var enderecoBanco = _context.Enderecos.Find(id);
+            if (enderecoBanco == null)
+                return NotFound("ID de endereço inválido!");
+
+            if (_context.Clientes.Find(endereco.ClienteId) == null)
+                return NotFound("ID de cliente inválido!");
+
+            enderecoBanco.ClienteId = endereco.ClienteId;
+            enderecoBanco.CEP = String.IsNullOrEmpty(endereco.CEP) ? enderecoBanco.CEP : endereco.CEP;
+            enderecoBanco.Logradouro = String.IsNullOrEmpty(endereco.Logradouro) ? enderecoBanco.Logradouro : endereco.Logradouro;
+            enderecoBanco.Numero = String.IsNullOrEmpty(endereco.Numero) ? enderecoBanco.Numero : endereco.Numero;
+            enderecoBanco.Complemento = String.IsNullOrEmpty(endereco.Complemento) ? enderecoBanco.Complemento : endereco.Complemento;
+            enderecoBanco.Bairro = String.IsNullOrEmpty(endereco.Bairro) ? enderecoBanco.Bairro : endereco.Bairro;
+            enderecoBanco.Cidade = String.IsNullOrEmpty(endereco.Cidade) ? enderecoBanco.Cidade : endereco.Cidade;
+            enderecoBanco.Estado = String.IsNullOrEmpty(endereco.Estado) ? enderecoBanco.Estado : endereco.Estado;
+
+            _context.Enderecos.Update(enderecoBanco);
+            _context.SaveChanges();
+
+            return Ok(enderecoBanco);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeletarEndereco (int id)
+        {
+            var enderecoBanco = _context.Enderecos.Find (id);
+
+            if (enderecoBanco == null)
+                return NotFound("ID de endereço Inválido!");
+
+            _context.Enderecos.Remove(enderecoBanco);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }

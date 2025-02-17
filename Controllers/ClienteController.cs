@@ -35,9 +35,41 @@ namespace MiniCRM.Controllers
             var cliente = _context.Clientes.Find(id);
 
             if (cliente == null)
-                return NotFound();
+                return NotFound("ID de cliente inválido!");
 
             return Ok(cliente);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult AtualizarCliente (int id, Cliente cliente)
+        {
+            var clienteBanco = _context.Clientes.Find(id);            
+            if (clienteBanco == null)
+                return NotFound("ID de cliente inválido!");
+            
+            clienteBanco.Nome = String.IsNullOrEmpty(cliente.Nome) ? clienteBanco.Nome : cliente.Nome;
+            clienteBanco.CNPJ = String.IsNullOrEmpty(cliente.CNPJ) ? clienteBanco.CNPJ : cliente.CNPJ;
+            clienteBanco.SituacaoCliente = (_context.SituacaoClientes.Find(cliente.SituacaoCliente) == null) ? clienteBanco.SituacaoCliente : cliente.SituacaoCliente;
+
+            _context.Clientes.Update(clienteBanco);
+            _context.SaveChanges();
+            
+            return Ok(clienteBanco);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeletarCliente (int id)
+        {
+            var clienteBanco = _context.Clientes.Find (id);
+
+            if (clienteBanco == null)
+                return NotFound("ID de cliente inválido!");
+
+            _context.Clientes.Remove(clienteBanco);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }

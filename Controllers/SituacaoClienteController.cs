@@ -27,15 +27,46 @@ namespace MiniCRM.Controllers
             return Ok(situacaoCliente);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public IActionResult ObterSituacaoPorId(int id)
         {
             var situacao = _context.SituacaoClientes.Find(id);
 
             if (situacao == null)
-                return NotFound();
+                return NotFound("ID de situacao inválido!");
                 
             return Ok(situacao);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult AtualizarSituacao (int id, SituacaoCliente situacaoCliente)
+        {
+            var situacaoClienteBanco = _context.SituacaoClientes.Find(id);
+            
+            if (situacaoClienteBanco == null)
+                return NotFound("ID de situacao inválido!");
+
+            situacaoClienteBanco.Status = String.IsNullOrEmpty(situacaoCliente.Status) ? situacaoClienteBanco.Status : situacaoCliente.Status;
+            _context.SituacaoClientes.Update(situacaoCliente);
+            _context.SaveChanges();
+
+            return Ok(situacaoClienteBanco);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeletarSituacao (int id)
+        {
+            var situacaoClienteBanco = _context.SituacaoClientes.Find (id);
+
+            if (situacaoClienteBanco == null)
+                return NotFound("ID de situacao inválido!");
+
+            _context.SituacaoClientes.Remove(situacaoClienteBanco);
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }
