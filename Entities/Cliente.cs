@@ -15,8 +15,5 @@ namespace MiniCRM.Entities
         
         public int? SituacaoClienteId { get; set; }
         public SituacaoCliente SituacaoCliente { get; set; }
-
-        public List<Contato> Contatos { get; set; }
-        public List<Endereco> Enderecos { get; set; }
     }
 }
