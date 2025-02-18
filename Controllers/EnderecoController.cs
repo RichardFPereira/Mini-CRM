@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
 using MiniCRM.Entities;
 
@@ -22,9 +23,25 @@ namespace MiniCRM.Controllers
         [HttpPost]
         public IActionResult Create (Endereco endereco)
         {
-            _context.Add(endereco);
-            _context.SaveChanges();
-            return Ok(endereco);
+            try
+            {
+                _context.Add(endereco);
+                _context.SaveChanges();
+
+                return Ok(endereco);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar endereco.");
+            }
         }
 
         [HttpGet]
@@ -59,10 +76,25 @@ namespace MiniCRM.Controllers
             enderecoBanco.Cidade = String.IsNullOrEmpty(endereco.Cidade) ? enderecoBanco.Cidade : endereco.Cidade;
             enderecoBanco.Estado = String.IsNullOrEmpty(endereco.Estado) ? enderecoBanco.Estado : endereco.Estado;
 
-            _context.Enderecos.Update(enderecoBanco);
-            _context.SaveChanges();
+            try
+            {
+                _context.Enderecos.Update(enderecoBanco);
+                _context.SaveChanges();
 
-            return Ok(enderecoBanco);
+                return Ok(enderecoBanco);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar endereço.");
+            }
         }
 
         [HttpDelete]
@@ -73,10 +105,26 @@ namespace MiniCRM.Controllers
 
             if (enderecoBanco == null)
                 return NotFound("ID de endereço Inválido!");
+            
+            try
+            {
+                _context.Enderecos.Remove(enderecoBanco);
+                _context.SaveChanges();
 
-            _context.Enderecos.Remove(enderecoBanco);
-            _context.SaveChanges();
-            return NoContent();
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar endereco.");
+            }
         }
     }
 }

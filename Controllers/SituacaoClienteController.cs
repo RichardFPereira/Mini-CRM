@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
 using MiniCRM.Entities;
 
@@ -22,9 +23,24 @@ namespace MiniCRM.Controllers
         [HttpPost]
         public IActionResult Create (SituacaoCliente situacaoCliente)
         {
-            _context.Add(situacaoCliente);
-            _context.SaveChanges();
-            return Ok(situacaoCliente);
+            try
+            {
+                _context.Add(situacaoCliente);
+                _context.SaveChanges();
+                return Ok(situacaoCliente);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar situacao.");
+            }     
         }
 
         [HttpGet]
@@ -49,10 +65,26 @@ namespace MiniCRM.Controllers
                 return NotFound("ID de situacao inválido!");
 
             situacaoClienteBanco.Status = String.IsNullOrEmpty(situacaoCliente.Status) ? situacaoClienteBanco.Status : situacaoCliente.Status;
-            _context.SituacaoClientes.Update(situacaoCliente);
-            _context.SaveChanges();
 
-            return Ok(situacaoClienteBanco);
+            try
+            {                
+                _context.SituacaoClientes.Update(situacaoCliente);
+                _context.SaveChanges();
+
+                return Ok(situacaoClienteBanco);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar situacao.");
+            }
         }
 
         [HttpDelete]
@@ -64,9 +96,25 @@ namespace MiniCRM.Controllers
             if (situacaoClienteBanco == null)
                 return NotFound("ID de situacao inválido!");
 
-            _context.SituacaoClientes.Remove(situacaoClienteBanco);
-            _context.SaveChanges();
-            return NoContent();
+            try
+            {
+                _context.SituacaoClientes.Remove(situacaoClienteBanco);
+                _context.SaveChanges();
+
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest("Ocorreu um conflito de concorrência ao salvar os dados.");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "Erro ao salvar dados no banco.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro interno ao atualizar situacao.");
+            }
         }
     }
 }
