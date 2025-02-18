@@ -70,7 +70,7 @@ namespace MiniCRM.Controllers
 
             try
             {                
-                _context.SituacaoClientes.Update(situacaoCliente);
+                _context.SituacaoClientes.Update(situacaoClienteBanco);
                 _context.SaveChanges();
 
                 return Ok(situacaoClienteBanco);
