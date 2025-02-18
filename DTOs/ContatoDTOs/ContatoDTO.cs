@@ -13,10 +13,11 @@ namespace MiniCRM.DTOs.ContatoDTOs
         public int ClienteId { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "O nome deve conter pelo menos 3 caracteres.")]
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "O telefone é obrigatório.",AllowEmptyStrings = false)]
+        [MinLength(9, ErrorMessage = "O telefone deve conter pelo menos 9 dígitos.")]
         [Phone]
         public string Telefone { get; set; }
         
