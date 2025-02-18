@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
+using MiniCRM.DTOs.SituacaoClienteDTOs;
 using MiniCRM.Entities;
 
 namespace MiniCRM.Controllers
@@ -21,8 +22,13 @@ namespace MiniCRM.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create (SituacaoCliente situacaoCliente)
+        public IActionResult CreateSituacaoCliente (SituacaoClienteDTO situacaoClienteDTO)
         {
+            SituacaoCliente situacaoCliente = new SituacaoCliente
+            {
+                Status = situacaoClienteDTO.Status
+            };
+
             try
             {
                 _context.Add(situacaoCliente);
@@ -45,35 +51,37 @@ namespace MiniCRM.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult ObterSituacaoPorId(int id)
+        public IActionResult GetSituacaoClienteById(int id)
         {
             var situacao = _context.SituacaoClientes.Find(id);
-
             if (situacao == null)
                 return NotFound("ID de situacao inválido!");
+
+            SituacaoClienteReadDTO situacaoClienteDTO = new SituacaoClienteReadDTO
+            {
+                Id = situacao.Id,
+                Status = situacao.Status
+            };
                 
-            return Ok(situacao);
+            return Ok(situacaoClienteDTO);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult AtualizarSituacao (int id, SituacaoCliente situacaoCliente)
+        public IActionResult UpdateSituacaoCliente (int id, SituacaoClienteDTO situacaoClienteDTO)
         {
-            var situacaoClienteBanco = _context.SituacaoClientes.Find(id);
-            
-            if (situacaoClienteBanco == null)
+            var situacaoCliente = _context.SituacaoClientes.Find(id);            
+            if (situacaoCliente == null)
                 return NotFound("ID de situacao inválido!");
 
-            situacaoClienteBanco.Status = String.IsNullOrEmpty(situacaoCliente.Status) 
-                ? situacaoClienteBanco.Status 
-                : situacaoCliente.Status;
+            situacaoCliente.Status = situacaoClienteDTO.Status;
 
             try
             {                
-                _context.SituacaoClientes.Update(situacaoClienteBanco);
+                _context.SituacaoClientes.Update(situacaoCliente);
                 _context.SaveChanges();
 
-                return Ok(situacaoClienteBanco);
+                return Ok(situacaoCliente);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -91,16 +99,16 @@ namespace MiniCRM.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeletarSituacao (int id)
+        public IActionResult DeleteSituacaoCliente (int id)
         {
-            var situacaoClienteBanco = _context.SituacaoClientes.Find (id);
+            var situacaoCliente = _context.SituacaoClientes.Find (id);
 
-            if (situacaoClienteBanco == null)
+            if (situacaoCliente == null)
                 return NotFound("ID de situacao inválido!");
 
             try
             {
-                _context.SituacaoClientes.Remove(situacaoClienteBanco);
+                _context.SituacaoClientes.Remove(situacaoCliente);
                 _context.SaveChanges();
 
                 return NoContent();

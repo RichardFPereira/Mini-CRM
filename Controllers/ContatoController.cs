@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
+using MiniCRM.DTOs.ClienteDTOs;
+using MiniCRM.DTOs.ContatoDTOs;
 using MiniCRM.Entities;
 
 namespace MiniCRM.Controllers
@@ -21,8 +23,19 @@ namespace MiniCRM.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create (Contato contato)
+        public IActionResult CreateContato (ContatoDTO contatoDTO)
         {
+            if (_context.Clientes.Find(contatoDTO.ClienteId) == null)
+                return NotFound("ID de cliente inválido!");            
+
+            Contato contato = new Contato
+            {
+                ClienteId = contatoDTO.ClienteId,
+                Nome = contatoDTO.Nome,
+                Email = contatoDTO.Email,
+                Telefone = contatoDTO.Telefone,
+            };
+
             try
             {
                 _context.Add(contato);
@@ -49,41 +62,43 @@ namespace MiniCRM.Controllers
         public IActionResult GetContatoById (int id)
         {
             var contato = _context.Contatos.Find(id);
-
             if (contato == null)
-                return NotFound("ID de contato inválido!");
+                return NotFound("ID de contato inválido!");            
+            
+            ContatoReadDTO contatoReadDTO = new ContatoReadDTO
+            {
+                Id = contato.Id,
+                ClienteId = contato.ClienteId,
+                Nome = contato.Nome,
+                Email = contato.Email,
+                Telefone = contato.Telefone,
+            };
 
-            return Ok(contato);
+            return Ok(contatoReadDTO);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult AtualizaContato (int id, Contato contato)
+        public IActionResult UpdateContato (int id, ContatoDTO contatoDTO)
         {
-            var contatoBanco = _context.Contatos.Find(id);
-            if (contatoBanco == null)
+            var contato = _context.Contatos.Find(id);
+            if (contato == null)
                 return NotFound("ID de contato inválido!");
 
             if (_context.Clientes.Find(contato.ClienteId) == null)
                 return NotFound("ID de cliente inválido!");
             
-            contatoBanco.ClienteId = contato.ClienteId;
-            contatoBanco.Nome = String.IsNullOrEmpty(contato.Nome) 
-                ? contatoBanco.Nome 
-                : contato.Nome;
-            contatoBanco.Telefone = String.IsNullOrEmpty(contato.Telefone) 
-                ? contatoBanco.Telefone 
-                : contato.Telefone;
-            contatoBanco.Email = String.IsNullOrEmpty(contato.Email) 
-                ? contatoBanco.Email 
-                : contato.Email;
+            contato.ClienteId = contatoDTO.ClienteId;
+            contato.Nome = contatoDTO.Nome;
+            contato.Email = contatoDTO.Email;
+            contato.Telefone = contatoDTO.Telefone;
 
             try
             {
-                _context.Contatos.Update(contatoBanco);
+                _context.Contatos.Update(contato);
                 _context.SaveChanges();
 
-                return Ok(contatoBanco);
+                return Ok(contato);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -101,16 +116,16 @@ namespace MiniCRM.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeletarContato (int id)
+        public IActionResult DeleteContato (int id)
         {
-            var contatoBanco = _context.Contatos.Find (id);
+            var contato = _context.Contatos.Find(id);
 
-            if (contatoBanco == null)
+            if (contato == null)
                 return NotFound("ID de contato inválido!");
             
             try
             {
-                _context.Contatos.Remove(contatoBanco);
+                _context.Contatos.Remove(contato);
                 _context.SaveChanges();
 
                 return NoContent();

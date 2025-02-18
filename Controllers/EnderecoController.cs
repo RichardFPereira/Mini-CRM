@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
+using MiniCRM.DTOs.ClienteDTOs;
+using MiniCRM.DTOs.EnderecoDTOs;
 using MiniCRM.Entities;
 
 namespace MiniCRM.Controllers
@@ -21,8 +23,24 @@ namespace MiniCRM.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create (Endereco endereco)
+        public IActionResult CreateEndereco(EnderecoDTO enderecoDTO)
         {
+
+            if(_context.Clientes.Find(enderecoDTO.ClienteId) == null)
+                return NotFound("ID de cliente inválido!");            
+            
+            Endereco endereco = new Endereco
+            {
+                ClienteId = enderecoDTO.ClienteId,
+                CEP = enderecoDTO.CEP,
+                Logradouro = enderecoDTO.Logradouro,
+                Numero = enderecoDTO.Numero,
+                Complemento = enderecoDTO.Complemento,
+                Bairro = enderecoDTO.Bairro,
+                Cidade = enderecoDTO.Cidade,
+                Estado = enderecoDTO.Estado
+            };
+
             try
             {
                 _context.Add(endereco);
@@ -48,54 +66,50 @@ namespace MiniCRM.Controllers
         [Route("{id}")]
         public IActionResult GetEnderecoById (int id)
         {
-            var endereco = _context.Enderecos.Find(id);
-            
+            var endereco = _context.Enderecos.Find(id);            
             if (endereco == null)
                 return NotFound("ID de endereço inválido!");
 
-            return Ok(endereco);
+            EnderecoReadDTO enderecoDTO = new EnderecoReadDTO
+            {
+                ClienteId = endereco.ClienteId,
+                CEP = endereco.CEP,
+                Logradouro = endereco.Logradouro,
+                Numero = endereco.Numero,
+                Complemento = endereco.Complemento,
+                Bairro = endereco.Bairro,
+                Cidade = endereco.Cidade,
+                Estado = endereco.Estado
+            };
+
+            return Ok(enderecoDTO);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult AtualizaEndereco (int id, Endereco endereco)
+        public IActionResult UpdateEndereco (int id, EnderecoDTO enderecoDTO)
         {
-            var enderecoBanco = _context.Enderecos.Find(id);
-            if (enderecoBanco == null)
+            var endereco = _context.Enderecos.Find(id);
+            if (endereco == null)
                 return NotFound("ID de endereço inválido!");
 
             if (_context.Clientes.Find(endereco.ClienteId) == null)
                 return NotFound("ID de cliente inválido!");
 
-            enderecoBanco.ClienteId = endereco.ClienteId;
-            enderecoBanco.CEP = String.IsNullOrEmpty(endereco.CEP) 
-                ? enderecoBanco.CEP 
-                : endereco.CEP;
-            enderecoBanco.Logradouro = String.IsNullOrEmpty(endereco.Logradouro) 
-                ? enderecoBanco.Logradouro 
-                : endereco.Logradouro;
-            enderecoBanco.Numero = String.IsNullOrEmpty(endereco.Numero) 
-                ? enderecoBanco.Numero 
-                : endereco.Numero;
-            enderecoBanco.Complemento = String.IsNullOrEmpty(endereco.Complemento) 
-                ? enderecoBanco.Complemento 
-                : endereco.Complemento;
-            enderecoBanco.Bairro = String.IsNullOrEmpty(endereco.Bairro) 
-                ? enderecoBanco.Bairro 
-                : endereco.Bairro;
-            enderecoBanco.Cidade = String.IsNullOrEmpty(endereco.Cidade) 
-                ? enderecoBanco.Cidade 
-                : endereco.Cidade;
-            enderecoBanco.Estado = String.IsNullOrEmpty(endereco.Estado) 
-                ? enderecoBanco.Estado 
-                : endereco.Estado;
+            endereco.ClienteId = enderecoDTO.ClienteId;
+            endereco.CEP = enderecoDTO.CEP;
+            endereco.Logradouro = enderecoDTO.Logradouro;
+            endereco.Numero = enderecoDTO.Numero;
+            endereco.Bairro = enderecoDTO.Bairro;
+            endereco.Cidade = enderecoDTO.Cidade;
+            endereco.Estado = enderecoDTO.Estado;
 
             try
             {
-                _context.Enderecos.Update(enderecoBanco);
+                _context.Enderecos.Update(endereco);
                 _context.SaveChanges();
 
-                return Ok(enderecoBanco);
+                return Ok(endereco);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -113,16 +127,16 @@ namespace MiniCRM.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeletarEndereco (int id)
+        public IActionResult DeleteEndereco (int id)
         {
-            var enderecoBanco = _context.Enderecos.Find (id);
+            var endereco = _context.Enderecos.Find (id);
 
-            if (enderecoBanco == null)
+            if (endereco == null)
                 return NotFound("ID de endereço Inválido!");
             
             try
             {
-                _context.Enderecos.Remove(enderecoBanco);
+                _context.Enderecos.Remove(endereco);
                 _context.SaveChanges();
 
                 return NoContent();

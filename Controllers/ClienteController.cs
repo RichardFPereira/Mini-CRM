@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
+using MiniCRM.DTOs.ClienteDTOs;
 using MiniCRM.Entities;
 
 namespace MiniCRM.Controllers
@@ -21,11 +22,18 @@ namespace MiniCRM.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Cliente cliente)
-        {            
+        public IActionResult CreateCliente(ClienteDTO  clienteDTO)
+        {   
+            var cliente = new Cliente
+            {
+                Nome = clienteDTO.Nome,
+                CNPJ = clienteDTO.CNPJ,
+                DataCadastro = DateTime.Now,
+                SituacaoClienteId = clienteDTO.SituacaoClienteId,
+            };
+
             try
             {
-                cliente.DataCadastro = DateTime.Now;
                 _context.Add(cliente);
                 _context.SaveChanges();
                 
@@ -50,37 +58,41 @@ namespace MiniCRM.Controllers
         public IActionResult GetClienteById (int id)
         {
             var cliente = _context.Clientes.Find(id);
-
             if (cliente == null)
                 return NotFound("ID de cliente inválido!");
 
-            return Ok(cliente);
+            var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
+            var clienteReadDTO = new ClienteReadDTO
+            {
+                Id = cliente.Id,
+                Nome = cliente.Nome,
+                CNPJ = cliente.CNPJ,
+                DataCadastro = cliente.DataCadastro,
+                SituacaoClienteId = cliente.SituacaoClienteId,
+                SituacaoStatus = situacaoCliente.Status
+            };
+
+            return Ok(clienteReadDTO);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult AtualizarCliente (int id, Cliente cliente)
+        public IActionResult UpdateCliente (int id, ClienteDTO  clienteDTO)
         {
-            var clienteBanco = _context.Clientes.Find(id);            
-            if (clienteBanco == null)
+            var cliente = _context.Clientes.Find(id);            
+            if (cliente == null)
                 return NotFound("ID de cliente inválido!");
             
-            clienteBanco.Nome = String.IsNullOrEmpty(cliente.Nome) 
-                ? clienteBanco.Nome 
-                : cliente.Nome;
-            clienteBanco.CNPJ = String.IsNullOrEmpty(cliente.CNPJ) 
-                ? clienteBanco.CNPJ 
-                : cliente.CNPJ;
-            clienteBanco.SituacaoCliente = (_context.SituacaoClientes.Find(cliente.SituacaoCliente) == null) 
-                ? clienteBanco.SituacaoCliente 
-                : cliente.SituacaoCliente;
-
+            cliente.Nome = clienteDTO.Nome;
+            cliente.CNPJ = clienteDTO.CNPJ;
+            cliente.SituacaoClienteId = clienteDTO.SituacaoClienteId;
+            
             try
             {
-                _context.Clientes.Update(clienteBanco);
+                _context.Clientes.Update(cliente);
                 _context.SaveChanges();
             
-                return Ok(clienteBanco);
+                return Ok(cliente);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -98,16 +110,16 @@ namespace MiniCRM.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeletarCliente (int id)
+        public IActionResult DeleteCliente (int id)
         {
-            var clienteBanco = _context.Clientes.Find (id);
+            var cliente = _context.Clientes.Find(id);
 
-            if (clienteBanco == null)
+            if (cliente == null)
                 return NotFound("ID de cliente inválido!");
 
             try
             {
-                _context.Clientes.Remove(clienteBanco);
+                _context.Clientes.Remove(cliente);
                 _context.SaveChanges();
 
                 return NoContent();            
