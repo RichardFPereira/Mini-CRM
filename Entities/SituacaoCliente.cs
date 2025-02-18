@@ -9,7 +9,6 @@ namespace MiniCRM.Entities
     public class SituacaoCliente
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "A situação é obrigatória.",AllowEmptyStrings = false)]
         public string Status { get; set; }
     }
 }

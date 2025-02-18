@@ -13,15 +13,9 @@ namespace MiniCRM.Entities
     public class Cliente
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "O nome é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(50)]
         public string Nome { get; set; }
-        [Required(ErrorMessage = "O CNPJ é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(14)]
         public string CNPJ { get; set; }
         public DateTime DataCadastro { get; set; }        
         public int? SituacaoClienteId { get; set; }
-        [JsonIgnore]
-        public SituacaoCliente SituacaoCliente { get; set; }
     }
 }
