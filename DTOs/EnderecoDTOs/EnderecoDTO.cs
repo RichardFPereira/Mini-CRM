@@ -16,7 +16,7 @@ namespace MiniCRM.DTOs.EnderecoDTOs
         public string CEP { get; set; }
 
         [Required(ErrorMessage = "O logradouro é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(3, ErrorMessage = "O nome da rua dever ter pelo menos 3 caracteres.")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O nome da rua dever ter pelo menos 3 caracteres.")]
         public string Logradouro { get; set; }
 
         [Required(ErrorMessage = "O número é obrigatório.",AllowEmptyStrings = false)]

@@ -9,6 +9,7 @@ namespace MiniCRM.DTOs.SituacaoClienteDTOs
     public class SituacaoClienteDTO
     {
         [Required(ErrorMessage = "A situação é obrigatória.",AllowEmptyStrings = false)]
+        [MinLength(3, ErrorMessage = "O status da situação deve ter pelo menos 3 caracteres.")]
         public string Status { get; set; }
     }
 
