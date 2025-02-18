@@ -10,12 +10,12 @@ namespace MiniCRM.DTOs.ClienteDTOs
 {
     public class ClienteDTO
     {
-        [Required(ErrorMessage = "O nome é obrigatório.")]
-        [StringLength(100)]
+        [Required(ErrorMessage = "O nome é obrigatório.", AllowEmptyStrings = false)]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "O nome deve ter pelo menos 3 caracteres.")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "O CNPJ é obrigatório.")]
-        [StringLength(14, ErrorMessage = "CNPJ deve ter até 14 caracteres (somente dígitos).")]
+        [Required(ErrorMessage = "O CNPJ é obrigatório.", AllowEmptyStrings = false)]
+        [StringLength(14, MinimumLength = 14, ErrorMessage = "CNPJ deve ter 14 caracteres (somente dígitos).")]
         public string CNPJ { get; set; }
 
         [Required]
