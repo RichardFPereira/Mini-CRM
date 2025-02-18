@@ -16,23 +16,25 @@ namespace MiniCRM.DTOs.EnderecoDTOs
         public string CEP { get; set; }
 
         [Required(ErrorMessage = "O logradouro é obrigatório.",AllowEmptyStrings = false)]
+        [StringLength(3, ErrorMessage = "O nome da rua dever ter pelo menos 3 caracteres.")]
         public string Logradouro { get; set; }
 
         [Required(ErrorMessage = "O número é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(5, ErrorMessage = "Número muito longo (máximo 5 caracteres).")]        
+        [StringLength(5, MinimumLength = 1, ErrorMessage = "Número muito longo (máximo 5 caracteres).")]        
         public string Numero { get; set; }
 
-        [Required(ErrorMessage = "O complemento é obrigatório.",AllowEmptyStrings = false)]
         public string Complemento { get; set; }
 
         [Required(ErrorMessage = "O bairro é obrigatório.",AllowEmptyStrings = false)]
+        [StringLength(3, ErrorMessage = "O nome do bairro dever ter pelo menos 3 caracteres.")]
         public string Bairro { get; set; }
 
         [Required(ErrorMessage = "A cidade é obrigatória.",AllowEmptyStrings = false)]
+        [StringLength(3, ErrorMessage = "O nome da cidade dever ter pelo menos 3 caracteres.")]
         public string Cidade { get; set; }
 
         [Required(ErrorMessage = "O Estado é obrigatório.",AllowEmptyStrings = false)]
-        [StringLength(2, ErrorMessage = "Estado deve ter 2 caracteres (ex: SP, RJ, MG).")]
+        [StringLength(2, MinimumLength = 1, ErrorMessage = "Estado deve ter 2 caracteres (ex: SP, RJ, MG).")]
         public string Estado { get; set; }
     }
 
