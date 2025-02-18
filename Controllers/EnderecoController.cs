@@ -68,13 +68,27 @@ namespace MiniCRM.Controllers
                 return NotFound("ID de cliente inválido!");
 
             enderecoBanco.ClienteId = endereco.ClienteId;
-            enderecoBanco.CEP = String.IsNullOrEmpty(endereco.CEP) ? enderecoBanco.CEP : endereco.CEP;
-            enderecoBanco.Logradouro = String.IsNullOrEmpty(endereco.Logradouro) ? enderecoBanco.Logradouro : endereco.Logradouro;
-            enderecoBanco.Numero = String.IsNullOrEmpty(endereco.Numero) ? enderecoBanco.Numero : endereco.Numero;
-            enderecoBanco.Complemento = String.IsNullOrEmpty(endereco.Complemento) ? enderecoBanco.Complemento : endereco.Complemento;
-            enderecoBanco.Bairro = String.IsNullOrEmpty(endereco.Bairro) ? enderecoBanco.Bairro : endereco.Bairro;
-            enderecoBanco.Cidade = String.IsNullOrEmpty(endereco.Cidade) ? enderecoBanco.Cidade : endereco.Cidade;
-            enderecoBanco.Estado = String.IsNullOrEmpty(endereco.Estado) ? enderecoBanco.Estado : endereco.Estado;
+            enderecoBanco.CEP = String.IsNullOrEmpty(endereco.CEP) 
+                ? enderecoBanco.CEP 
+                : endereco.CEP;
+            enderecoBanco.Logradouro = String.IsNullOrEmpty(endereco.Logradouro) 
+                ? enderecoBanco.Logradouro 
+                : endereco.Logradouro;
+            enderecoBanco.Numero = String.IsNullOrEmpty(endereco.Numero) 
+                ? enderecoBanco.Numero 
+                : endereco.Numero;
+            enderecoBanco.Complemento = String.IsNullOrEmpty(endereco.Complemento) 
+                ? enderecoBanco.Complemento 
+                : endereco.Complemento;
+            enderecoBanco.Bairro = String.IsNullOrEmpty(endereco.Bairro) 
+                ? enderecoBanco.Bairro 
+                : endereco.Bairro;
+            enderecoBanco.Cidade = String.IsNullOrEmpty(endereco.Cidade) 
+                ? enderecoBanco.Cidade 
+                : endereco.Cidade;
+            enderecoBanco.Estado = String.IsNullOrEmpty(endereco.Estado) 
+                ? enderecoBanco.Estado 
+                : endereco.Estado;
 
             try
             {

@@ -68,9 +68,15 @@ namespace MiniCRM.Controllers
                 return NotFound("ID de cliente inválido!");
             
             contatoBanco.ClienteId = contato.ClienteId;
-            contatoBanco.Nome = String.IsNullOrEmpty(contatoBanco.Nome) ? contatoBanco.Nome : contatoBanco.Nome;
-            contatoBanco.Telefone = String.IsNullOrEmpty(contatoBanco.Telefone) ? contatoBanco.Telefone : contatoBanco.Telefone;
-            contatoBanco.Email = String.IsNullOrEmpty(contatoBanco.Email) ? contatoBanco.Email : contatoBanco.Email;
+            contatoBanco.Nome = String.IsNullOrEmpty(contato.Nome) 
+                ? contatoBanco.Nome 
+                : contato.Nome;
+            contatoBanco.Telefone = String.IsNullOrEmpty(contato.Telefone) 
+                ? contatoBanco.Telefone 
+                : contato.Telefone;
+            contatoBanco.Email = String.IsNullOrEmpty(contato.Email) 
+                ? contatoBanco.Email 
+                : contato.Email;
 
             try
             {

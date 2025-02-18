@@ -64,7 +64,9 @@ namespace MiniCRM.Controllers
             if (situacaoClienteBanco == null)
                 return NotFound("ID de situacao inválido!");
 
-            situacaoClienteBanco.Status = String.IsNullOrEmpty(situacaoCliente.Status) ? situacaoClienteBanco.Status : situacaoCliente.Status;
+            situacaoClienteBanco.Status = String.IsNullOrEmpty(situacaoCliente.Status) 
+                ? situacaoClienteBanco.Status 
+                : situacaoCliente.Status;
 
             try
             {                
