@@ -35,6 +35,9 @@ MiniCRM
 │   ┗ SituacaoCliente.cs
 ┣ Context
 │   ┗ MiniCRMContext.cs
+┣ Services
+│   ┗ ContatoService.cs
+│   ┗ EnderecoService.cs
 ┣ Migrations
 ┣ Program.cs
 ┣ appsettings.json
