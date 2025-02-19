@@ -40,6 +40,7 @@ namespace MiniCRM.DTOs.EnderecoDTOs
 
     public class EnderecoReadDTO
     {
+        public int Id { get; set; }
         public int ClienteId { get; set; }
         public string CEP { get; set; }
         public string Logradouro { get; set; }
