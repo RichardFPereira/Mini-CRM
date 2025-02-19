@@ -63,6 +63,36 @@ namespace MiniCRM.Controllers
         }
 
         [HttpGet]
+        [Route("Todos")]
+        public IActionResult GetEnderecos ()
+        {
+            var enderecos = _context.Enderecos.ToList();
+            if (enderecos == null)
+                return NotFound("Não há endereços cadastrados.");
+
+            List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();            
+            
+            foreach (Endereco endereco in enderecos)
+            {
+                EnderecoReadDTO enderecoDTO = new EnderecoReadDTO
+                {
+                    Id = endereco.Id,
+                    ClienteId = endereco.ClienteId,
+                    CEP = endereco.CEP,
+                    Logradouro = endereco.Logradouro,
+                    Numero = endereco.Numero,
+                    Complemento = endereco.Complemento,
+                    Bairro = endereco.Bairro,
+                    Cidade = endereco.Cidade,
+                    Estado = endereco.Estado
+                };
+                enderecosDTO.Add(enderecoDTO);
+            }
+
+            return Ok(enderecosDTO);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public IActionResult GetEnderecoById (int id)
         {
@@ -72,6 +102,7 @@ namespace MiniCRM.Controllers
 
             EnderecoReadDTO enderecoDTO = new EnderecoReadDTO
             {
+                Id = endereco.Id,
                 ClienteId = endereco.ClienteId,
                 CEP = endereco.CEP,
                 Logradouro = endereco.Logradouro,
