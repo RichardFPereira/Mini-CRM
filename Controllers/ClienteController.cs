@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiniCRM.Context;
 using MiniCRM.DTOs.ClienteDTOs;
+using MiniCRM.DTOs.ContatoDTOs;
+using MiniCRM.DTOs.EnderecoDTOs;
 using MiniCRM.Entities;
 
 namespace MiniCRM.Controllers
@@ -64,6 +66,44 @@ namespace MiniCRM.Controllers
             List<ClienteReadDTO> clientesDTO = new List<ClienteReadDTO>();
             foreach (Cliente cliente in clientes)
             {
+                var enderecos = _context.Enderecos.Where(x => x.ClienteId == cliente.Id).ToList();
+                List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();
+
+                foreach (Endereco endereco in enderecos)
+                {
+                    EnderecoReadDTO enderecoDTO = new EnderecoReadDTO()
+                    {
+                        Id = endereco.Id,
+                        ClienteId = endereco.ClienteId,
+                        CEP = endereco.CEP,
+                        Logradouro = endereco.Logradouro,
+                        Numero = endereco.Numero,
+                        Complemento = endereco.Complemento,
+                        Bairro = endereco.Bairro,
+                        Cidade = endereco.Cidade,
+                        Estado = endereco.Estado
+                    };
+                    
+                    enderecosDTO.Add(enderecoDTO);
+                }
+
+                var contatos = _context.Contatos.Where(x => x.ClienteId == cliente.Id).ToList();
+                List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
+
+                foreach (Contato contato in contatos)
+                {
+                    ContatoReadDTO contatoDTO = new ContatoReadDTO()
+                    {
+                        Id = contato.Id,
+                        ClienteId = contato.ClienteId,
+                        Nome = contato.Nome,
+                        Email = contato.Email,
+                        Telefone = contato.Telefone
+                    };
+                    
+                    contatosDTO.Add(contatoDTO);
+                }
+
                 var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
                 ClienteReadDTO clienteDTO = new ClienteReadDTO
                 {
@@ -71,7 +111,9 @@ namespace MiniCRM.Controllers
                     Nome = cliente.Nome,
                     CNPJ = cliente.CNPJ,
                     SituacaoClienteId = cliente.SituacaoClienteId,
-                    SituacaoStatus = situacaoCliente.Status                    
+                    SituacaoStatus = situacaoCliente.Status,
+                    Enderecos = enderecosDTO,
+                    Contatos = contatosDTO
                 };
 
                 clientesDTO.Add(clienteDTO);
@@ -88,6 +130,44 @@ namespace MiniCRM.Controllers
             if (cliente == null)
                 return NotFound("ID de cliente inválido!");
 
+            var enderecos = _context.Enderecos.Where(x => x.ClienteId == cliente.Id).ToList();
+                List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();
+
+                foreach (Endereco endereco in enderecos)
+                {
+                    EnderecoReadDTO enderecoDTO = new EnderecoReadDTO()
+                    {
+                        Id = endereco.Id,
+                        ClienteId = endereco.ClienteId,
+                        CEP = endereco.CEP,
+                        Logradouro = endereco.Logradouro,
+                        Numero = endereco.Numero,
+                        Complemento = endereco.Complemento,
+                        Bairro = endereco.Bairro,
+                        Cidade = endereco.Cidade,
+                        Estado = endereco.Estado
+                    };
+                    
+                    enderecosDTO.Add(enderecoDTO);
+                }
+
+                var contatos = _context.Contatos.Where(x => x.ClienteId == cliente.Id).ToList();
+                List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
+
+                foreach (Contato contato in contatos)
+                {
+                    ContatoReadDTO contatoDTO = new ContatoReadDTO()
+                    {
+                        Id = contato.Id,
+                        ClienteId = contato.ClienteId,
+                        Nome = contato.Nome,
+                        Email = contato.Email,
+                        Telefone = contato.Telefone
+                    };
+                    
+                    contatosDTO.Add(contatoDTO);
+                }
+
             var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
             var clienteReadDTO = new ClienteReadDTO
             {
@@ -96,7 +176,9 @@ namespace MiniCRM.Controllers
                 CNPJ = cliente.CNPJ,
                 DataCadastro = cliente.DataCadastro,
                 SituacaoClienteId = cliente.SituacaoClienteId,
-                SituacaoStatus = situacaoCliente.Status
+                SituacaoStatus = situacaoCliente.Status,
+                Contatos = contatosDTO,
+                Enderecos = enderecosDTO
             };
 
             return Ok(clienteReadDTO);
