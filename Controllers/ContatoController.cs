@@ -58,6 +58,31 @@ namespace MiniCRM.Controllers
         }
 
         [HttpGet]
+        [Route("Todos")]
+        public IActionResult GetContatos ()
+        {
+            var contatos = _context.Contatos.ToList();
+            if (contatos == null)
+                return NotFound("Não há contatos cadastrados na base.");
+
+            List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
+            foreach (Contato contato in contatos)
+            {
+                ContatoReadDTO contatoDTO = new ContatoReadDTO
+                {
+                    Id = contato.Id,
+                    Nome = contato.Nome,
+                    Email = contato.Email,
+                    Telefone = contato.Telefone
+                };
+
+                contatosDTO.Add(contatoDTO);
+            }    
+
+            return Ok(contatosDTO);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public IActionResult GetContatoById (int id)
         {
