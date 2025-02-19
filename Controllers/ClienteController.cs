@@ -54,6 +54,33 @@ namespace MiniCRM.Controllers
         }
 
         [HttpGet]
+        [Route("Todos")]
+        public IActionResult GetClientes()
+        {
+            var clientes = _context.Clientes.ToList();
+            if (clientes == null)
+                return NotFound("Não há clientes cadastrados na base");
+            
+            List<ClienteReadDTO> clientesDTO = new List<ClienteReadDTO>();
+            foreach (Cliente cliente in clientes)
+            {
+                var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
+                ClienteReadDTO clienteDTO = new ClienteReadDTO
+                {
+                    Id = cliente.Id,
+                    Nome = cliente.Nome,
+                    CNPJ = cliente.CNPJ,
+                    SituacaoClienteId = cliente.SituacaoClienteId,
+                    SituacaoStatus = situacaoCliente.Status                    
+                };
+
+                clientesDTO.Add(clienteDTO);
+            }
+
+            return Ok(clientesDTO);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public IActionResult GetClienteById (int id)
         {
