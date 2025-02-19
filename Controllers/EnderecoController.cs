@@ -8,6 +8,7 @@ using MiniCRM.Context;
 using MiniCRM.DTOs.ClienteDTOs;
 using MiniCRM.DTOs.EnderecoDTOs;
 using MiniCRM.Entities;
+using MiniCRM.Services;
 
 namespace MiniCRM.Controllers
 {
@@ -70,24 +71,7 @@ namespace MiniCRM.Controllers
             if (enderecos == null)
                 return NotFound("Não há endereços cadastrados.");
 
-            List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();            
-            
-            foreach (Endereco endereco in enderecos)
-            {
-                EnderecoReadDTO enderecoDTO = new EnderecoReadDTO
-                {
-                    Id = endereco.Id,
-                    ClienteId = endereco.ClienteId,
-                    CEP = endereco.CEP,
-                    Logradouro = endereco.Logradouro,
-                    Numero = endereco.Numero,
-                    Complemento = endereco.Complemento,
-                    Bairro = endereco.Bairro,
-                    Cidade = endereco.Cidade,
-                    Estado = endereco.Estado
-                };
-                enderecosDTO.Add(enderecoDTO);
-            }
+            List<EnderecoReadDTO> enderecosDTO = EnderecoService.MapperEnderecosList(enderecos);
 
             return Ok(enderecosDTO);
         }
