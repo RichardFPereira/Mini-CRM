@@ -9,6 +9,7 @@ using MiniCRM.DTOs.ClienteDTOs;
 using MiniCRM.DTOs.ContatoDTOs;
 using MiniCRM.DTOs.EnderecoDTOs;
 using MiniCRM.Entities;
+using MiniCRM.Services;
 
 namespace MiniCRM.Controllers
 {
@@ -18,7 +19,7 @@ namespace MiniCRM.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly MiniCRMContext _context;
-        public ClienteController (MiniCRMContext context)
+        public ClienteController(MiniCRMContext context)
         {
             _context = context;
         }
@@ -62,47 +63,15 @@ namespace MiniCRM.Controllers
             var clientes = _context.Clientes.ToList();
             if (clientes == null)
                 return NotFound("Não há clientes cadastrados na base");
-            
+
             List<ClienteReadDTO> clientesDTO = new List<ClienteReadDTO>();
             foreach (Cliente cliente in clientes)
             {
                 var enderecos = _context.Enderecos.Where(x => x.ClienteId == cliente.Id).ToList();
-                List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();
-
-                foreach (Endereco endereco in enderecos)
-                {
-                    EnderecoReadDTO enderecoDTO = new EnderecoReadDTO()
-                    {
-                        Id = endereco.Id,
-                        ClienteId = endereco.ClienteId,
-                        CEP = endereco.CEP,
-                        Logradouro = endereco.Logradouro,
-                        Numero = endereco.Numero,
-                        Complemento = endereco.Complemento,
-                        Bairro = endereco.Bairro,
-                        Cidade = endereco.Cidade,
-                        Estado = endereco.Estado
-                    };
-                    
-                    enderecosDTO.Add(enderecoDTO);
-                }
+                List<EnderecoReadDTO> enderecosDTO = EnderecoService.MapperEnderecosList(enderecos);
 
                 var contatos = _context.Contatos.Where(x => x.ClienteId == cliente.Id).ToList();
-                List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
-
-                foreach (Contato contato in contatos)
-                {
-                    ContatoReadDTO contatoDTO = new ContatoReadDTO()
-                    {
-                        Id = contato.Id,
-                        ClienteId = contato.ClienteId,
-                        Nome = contato.Nome,
-                        Email = contato.Email,
-                        Telefone = contato.Telefone
-                    };
-                    
-                    contatosDTO.Add(contatoDTO);
-                }
+                List<ContatoReadDTO> contatosDTO = ContatoService.MapperContatoList(contatos);
 
                 var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
                 ClienteReadDTO clienteDTO = new ClienteReadDTO
@@ -131,42 +100,10 @@ namespace MiniCRM.Controllers
                 return NotFound("ID de cliente inválido!");
 
             var enderecos = _context.Enderecos.Where(x => x.ClienteId == cliente.Id).ToList();
-                List<EnderecoReadDTO> enderecosDTO = new List<EnderecoReadDTO>();
+            List<EnderecoReadDTO> enderecosDTO = EnderecoService.MapperEnderecosList(enderecos);
 
-                foreach (Endereco endereco in enderecos)
-                {
-                    EnderecoReadDTO enderecoDTO = new EnderecoReadDTO()
-                    {
-                        Id = endereco.Id,
-                        ClienteId = endereco.ClienteId,
-                        CEP = endereco.CEP,
-                        Logradouro = endereco.Logradouro,
-                        Numero = endereco.Numero,
-                        Complemento = endereco.Complemento,
-                        Bairro = endereco.Bairro,
-                        Cidade = endereco.Cidade,
-                        Estado = endereco.Estado
-                    };
-                    
-                    enderecosDTO.Add(enderecoDTO);
-                }
-
-                var contatos = _context.Contatos.Where(x => x.ClienteId == cliente.Id).ToList();
-                List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
-
-                foreach (Contato contato in contatos)
-                {
-                    ContatoReadDTO contatoDTO = new ContatoReadDTO()
-                    {
-                        Id = contato.Id,
-                        ClienteId = contato.ClienteId,
-                        Nome = contato.Nome,
-                        Email = contato.Email,
-                        Telefone = contato.Telefone
-                    };
-                    
-                    contatosDTO.Add(contatoDTO);
-                }
+            var contatos = _context.Contatos.Where(x => x.ClienteId == cliente.Id).ToList();
+            List<ContatoReadDTO> contatosDTO = ContatoService.MapperContatoList(contatos);
 
             var situacaoCliente = _context.SituacaoClientes.Find(cliente.SituacaoClienteId);
             var clienteReadDTO = new ClienteReadDTO
