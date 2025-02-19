@@ -8,6 +8,7 @@ using MiniCRM.Context;
 using MiniCRM.DTOs.ClienteDTOs;
 using MiniCRM.DTOs.ContatoDTOs;
 using MiniCRM.Entities;
+using MiniCRM.Services;
 
 namespace MiniCRM.Controllers
 {
@@ -65,20 +66,7 @@ namespace MiniCRM.Controllers
             if (contatos == null)
                 return NotFound("Não há contatos cadastrados na base.");
 
-            List<ContatoReadDTO> contatosDTO = new List<ContatoReadDTO>();
-            foreach (Contato contato in contatos)
-            {
-                ContatoReadDTO contatoDTO = new ContatoReadDTO
-                {
-                    Id = contato.Id,
-                    Nome = contato.Nome,
-                    Email = contato.Email,
-                    Telefone = contato.Telefone
-                };
-
-                contatosDTO.Add(contatoDTO);
-            }    
-
+            List<ContatoReadDTO> contatosDTO = ContatoService.MapperContatoList(contatos);            
             return Ok(contatosDTO);
         }
 
